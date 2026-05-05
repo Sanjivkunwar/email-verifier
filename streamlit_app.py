@@ -138,8 +138,8 @@ def render_results(results):
 
     st.dataframe(
         df.style
-          .applymap(colour_status, subset=["status"])
-          .applymap(colour_score,  subset=["score"])
+          .map((colour_status, subset=["status"])
+          .map((colour_score,  subset=["score"])
           .set_properties(**{"font-size": "0.88rem"}),
         use_container_width=True,
         height=min(400, 50 + len(df) * 38),
