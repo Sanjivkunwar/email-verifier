@@ -113,16 +113,6 @@ def verify(email):
 # ─────────────────────────────────────────────────────────────────────────────
 # Helper — colour the Status column
 # ─────────────────────────────────────────────────────────────────────────────
-def colour_status(val):
-    if "✅" in val:  return "background-color:#dcfce7; color:#15803d; font-weight:600"
-    if "⚠️" in val: return "background-color:#fef3c7; color:#b45309; font-weight:600"
-    return "background-color:#fee2e2; color:#b91c1c; font-weight:600"
-
-def colour_score(val):
-    if val == 100: return "color:#15803d; font-weight:700"
-    if val >= 66:  return "color:#b45309; font-weight:700"
-    return "color:#b91c1c; font-weight:700"
-
 def render_results(results):
     df = pd.DataFrame(results)[["email","status","score","reason"]]
     total   = len(df)
@@ -131,19 +121,12 @@ def render_results(results):
     invalid = total - valid - unver
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Total",     total)
-    c2.metric("✅ Valid",   valid)
+    c1.metric("Total",        total)
+    c2.metric("✅ Valid",      valid)
     c3.metric("⚠️ Unverified", unver)
-    c4.metric("❌ Invalid", invalid)
+    c4.metric("❌ Invalid",    invalid)
 
-    st.dataframe(
-        df.style
-          .map((colour_status, subset=["status"])
-          .map((colour_score,  subset=["score"])
-          .set_properties(**{"font-size": "0.88rem"}),
-        use_container_width=True,
-        height=min(400, 50 + len(df) * 38),
-    )
+    st.dataframe(df, use_container_width=True, height=min(400, 50 + len(df) * 38))
 
     csv_out = df.to_csv(index=False).encode("utf-8")
     st.download_button(
